@@ -276,7 +276,7 @@ def main():
 
     # In distributed training, the load_dataset function guarantee that only one local process can concurrently
     # download the dataset.
-    #这里是加载数据
+    #加载数据集
     if data_args.train_file is not None or data_args.validation_file is not None:
         data_files = {}
         if data_args.train_file is not None:
@@ -291,22 +291,22 @@ def main():
             use_auth_token=True if model_args.use_auth_token else None,
         )
     else:
-        # Downloading and loading the race dataset from the hub.
+        # Downloading and loading the swag dataset from the hub.
         raw_datasets = load_dataset(
             "race",
             "high",
             cache_dir=model_args.cache_dir,
             use_auth_token=True if model_args.use_auth_token else None,
         )
-
-    #添加一个ID属性
-    def convert_ans_to_label(ans):
-        dict = {"A":0, "B":1, "C":2, "D":3}
-        return dict[ans]
-    raw_datasets = raw_datasets.map(lambda x: {"label": convert_ans_to_label(x["answer"])})
     # See more about loading any type of standard or custom dataset (from files, python dict, pandas DataFrame, etc) at
     # https://huggingface.co/docs/datasets/loading_datasets.html.
-
+    #添加一个label项
+    def convert_ans_to_label(ans):
+        dicts = {"A":0, "B":1, "C":2, "D":3}
+        return [dicts[e] for e in ans]
+    raw_datasets = raw_datasets.map(lambda x: {"label": convert_ans_to_label(x["answer"])}, batched=True)
+    #减少警告
+    transformers.logging.set_verbosity_error()
     # Load pretrained model and tokenizer
 
     # Distributed training:
@@ -336,7 +336,10 @@ def main():
     #模型用预训练的模型, 数据在前面用load_data加载
     #修改下面的内容, 硬train一发
     # When using your own dataset or a different dataset from swag, you will probably need to change this.
-    #最大的model_max_length不可以超过1024
+    ending_names = [f"ending{i}" for i in range(4)]
+    context_name = "sent1"
+    question_header_name = "sent2"
+
     if data_args.max_seq_length is None:
         max_seq_length = tokenizer.model_max_length
         if max_seq_length > 1024:
@@ -367,7 +370,7 @@ def main():
 
         tokenized_examples = tokenizer(contexts, answersents, truncation=True)
         return {k: [v[i : i + 4] for i in range(0, len(v), 4)] for k, v in tokenized_examples.items()}
-    transformers.logging.set_verbosity_error()
+
     if training_args.do_train:
         if "train" not in raw_datasets:
             raise ValueError("--do_train requires a train dataset")
@@ -457,7 +460,7 @@ def main():
         finetuned_from=model_args.model_name_or_path,
         tasks="multiple-choice",
         dataset_tags="race",
-        dataset_args="high",
+        dataset_args="regular",
         dataset="RACE",
         language="en",
     )
