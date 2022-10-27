@@ -22,8 +22,7 @@ tokenizer = RobertaTokenizer.from_pretrained(
 model = RobertaForMultipleChoice.from_pretrained(
 "LIAMF-USP/roberta-large-finetuned-race")
 raw_dataset = datasets.load_dataset(
-    "race",
-    "high",
+    "race", "high",
 )
 #加载race
 
@@ -107,10 +106,11 @@ from transformers import AutoModelForMultipleChoice, TrainingArguments, Trainer
 training_args = TrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
-    learning_rate=5e-5,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
-    num_train_epochs=3,
+    learning_rate=1e-5,
+    per_device_train_batch_size=1,
+    per_device_eval_batch_size=32,
+    num_train_epochs=4,
+    fp16=True,
     weight_decay=0.01,
 )
 
