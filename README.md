@@ -108,3 +108,4 @@ This command is the same and will work for:
 Note that this library is in alpha release so your feedback is more than welcome if you encounter any problem using it.
 
 如果你看到了中文的话：这里面似乎只有run_race_easy.py 和 run_swag.py 可以运行
+run_race_1也可以运行
