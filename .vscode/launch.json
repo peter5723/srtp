@@ -5,22 +5,38 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 当前文件",
+            "name": "Python: Current Fileeasy",
+            "python": "/home/panyonghua/anaconda3/envs/srtp/bin/python",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Current File",
+            "python": "/home/panyonghua/anaconda3/envs/srtp/bin/python",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
-                "--model_name_or_path", "LIAMF-USP/aristo-roberta",
+                "--model_name_or_path",
+                "bert-base-uncased",
                 "--do_train",
                 "--do_eval",
-                "--learning_rate","5e-5",
-                "--num_train_epochs","3",
-                "--output_dir","/tmp/swag_base",
-                "--per_gpu_eval_batch_size=16",
-                "--per_device_train_batch_size=16",
-                "--overwrite_output"]
+                "--learning_rate",
+                "1e-5",
+                "--num_train_epochs",
+                "3",
+                "--output_dir",
+                "/tmp/race_base",
+                "--per_gpu_eval_batch_size=32",
+                "--per_device_train_batch_size=1",
+                "--overwrite_output",
+                "--fp16"
+            ]
         }
     ]
 }

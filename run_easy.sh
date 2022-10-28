@@ -1,0 +1,1 @@
+nohup python run_race_easy.py >> output_race1_easy.out 2>&1 &
